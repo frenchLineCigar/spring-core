@@ -1,6 +1,8 @@
 package hello.core;
 
+import hello.core.discount.DiscountPolicy;
 import hello.core.discount.FixDiscountPolicy;
+import hello.core.member.MemberRepository;
 import hello.core.member.MemberService;
 import hello.core.member.MemberServiceImpl;
 import hello.core.member.MemoryMemberRepository;
@@ -14,19 +16,27 @@ import hello.core.order.OrderServiceImpl;
  */
 
 /**
- * AppConfig : 객체의 생성과 연결하는 역할을 담당, 앱이 어떻게 동작해야 할지 전체 구성을 책임진다 (관심사 분리)
- * 앱의 전체 동작 방식을 구성(config)하기 위해, `구현 객체를 생성하고, 연결하는 책임을 가지는` 별도의 설정 클래스
- * - 1) 앱의 실제 동작에 필요한 `구현 객체를 생성(구체 클래스 선택)`
- * - 2) 생성한 객체 인스턴스의 참조(레퍼런스)를 `생성자를 통해서 주입(연결)`
+ * AppConfig : 역할에 따른 구현이 잘 보이도록 리팩터링
+ * - 구성 정보를 까보면 역할에 따른 구현이 한 그림에 보여지도록
+ * - 메서드 명과 리턴 타입만 봐도 역할이 드러나도록, 각 서비스,레파지토리의 구현에 어떤 클래스를 쓸 것인지
+ * - 설계에 대한 그림이 구성 정보에 그대로 드러나게 된다 (역할이 나오고, 그 역할에 대한 구현이 어떻게 되는지 한 눈에 확인됨)
  */
 public class AppConfig {
 
     public MemberService memberService() {
-        return new MemberServiceImpl(new MemoryMemberRepository()); // 1)구현 객체 생성, 2)생성자 주입(연결)
+        return new MemberServiceImpl(memberRepository());
+    }
+
+    private MemberRepository memberRepository() {
+        return new MemoryMemberRepository(); //db가 바뀌어도 이 코드부분만 변경하면 됨
     }
 
     public OrderService orderService() {
-        return new OrderServiceImpl(new MemoryMemberRepository(), new FixDiscountPolicy()); // 1)구현 객체 생성, 2)생성자 주입(연결)
+        return new OrderServiceImpl(memberRepository(), discountPolicy());
+    }
+
+    public DiscountPolicy discountPolicy() { //할인정책은
+        return new FixDiscountPolicy(); //고정할인금액 쓰는구나
     }
 
 }

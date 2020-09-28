@@ -22,7 +22,7 @@ import hello.core.member.MemoryMemberRepository;
  */
 public class OrderServiceImpl implements OrderService {
 
-    //DIP를 만족 : OrderServiceImpl이 인터페이스(추상화)에만 의존하도록 코드 변경, 구현체가 누가 들어올지 모름
+    //DIP 만족 : OrderServiceImpl이 인터페이스(추상화)에만 의존하도록 코드 변경, 구현체가 누가 들어올지 전혀 모름
     private final MemberRepository memberRepository;
     private final DiscountPolicy discountPolicy;
 

@@ -3,6 +3,8 @@ package hello.core.order;
 import hello.core.discount.DiscountPolicy;
 import hello.core.member.Member;
 import hello.core.member.MemberRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by frenchline707@gmail.com on 2020-09-28
@@ -19,16 +21,22 @@ import hello.core.member.MemberRepository;
  * 5) `OrderServiceImpl` 은 이제부터 `실행에만 집중`하면 된다
  * - DIP 완성: `OrderServiceImpl`은 `MemberRepository, DiscountPolicy` 추상에만 의존하면 된다. 이제 구체 클래스를 몰라도 된다
  */
+
+@Component
 public class OrderServiceImpl implements OrderService {
 
     //DIP 만족 : OrderServiceImpl이 인터페이스(추상화)에만 의존하도록 코드 변경, 구현체가 누가 들어올지 전혀 모름
     private final MemberRepository memberRepository;
     private final DiscountPolicy discountPolicy;
 
+    @Autowired
     public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
         this.memberRepository = memberRepository;
         this.discountPolicy = discountPolicy;
     }
+    /**
+     * `@Autowired`를 사용하면 생성자에서 여러 의존관계도 한번에 주입받을 수 있다.
+     */
 
     /**
      * 주문 생성

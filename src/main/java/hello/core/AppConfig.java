@@ -20,21 +20,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AppConfig {
 
-    //@Bean memberService -> new MemoryMemberRepository()
-    //@Bean orderService -> new MemoryMemberRepository()
-
-    //call AppConfig.memberService
-    //call AppConfig.memberRepository
-    //call AppConfig.memberRepository
-    //call AppConfig.orderService
-    //call AppConfig.memberRepository
-    //예상: 메서드 호출 순서는 보장될 순 없으나, 결과적으로 memberRepository가 3번 호출되어야 한다?
-
-    //실제: memberRepository가 1번 호출된다 (스프링이 싱글톤을 보장해주는 것을 로그로 확인)
-    //call AppConfig.memberService
-    //call AppConfig.memberRepository
-    //call AppConfig.orderService
-
     @Bean
     public MemberService memberService() { //bean name (default) -> method name 로 등록됨
         //1번

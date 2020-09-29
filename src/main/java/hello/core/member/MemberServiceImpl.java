@@ -15,7 +15,7 @@ package hello.core.member;
  * 5) `MemberServiceImpl` 은 이제부터 `의존관계에 대한 고민은 외부`에 맡기고 `실행에만 집중`하면 된다
  * - DIP 완성: `MemberServiceImpl`은 `MemberRepository` 추상에만 의존하면 된다. 이제 구체 클래스를 몰라도 된다
  */
-public class MemberServiceImpl implements MemberService {
+public class MemberServiceImpl implements MemberService { // 싱글톤과 관련된 코드가 단 하나도 없어도 스프링 컨테이너가 빈을 싱글톤으로 관리
 
     private final MemberRepository memberRepository; // 1) DIP를 지킴 : MemberServiceImpl은 MemberRepository 인터페이스(추상화)에만 의존
 

@@ -1,5 +1,8 @@
 package hello.core;
 
+import hello.core.member.MemberRepository;
+import hello.core.member.MemoryMemberRepository;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
@@ -23,6 +26,28 @@ import static org.springframework.context.annotation.ComponentScan.Filter;
 )
 public class AutoAppConfig {
 
+    // 수동 빈 등록 vs 자동 빈 등록 : 수동 빈 등록이 자동 빈 등록보다 우선권을 가진다 (수동 빈이 자동 빈을 오버라이딩 해버린다)
+    @Bean(name = "memoryMemberRepository")
+    MemberRepository memberRepository() {
+        System.out.println("call AutoAppConfig.memberRepository");
+        return new MemoryMemberRepository();
+    }
+
+    /**
+     * [ 수동 빈 등록 시 남는 로그 ]
+     *
+     * Overriding bean definition for bean 'memoryMemberRepository' with a different definition:
+     * replacing
+     * [Generic bean: class [hello.core.member.MemoryMemberRepository]; scope=singleton; abstract=false; lazyInit=null; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null; defined in file [C:\...\core\out\production\classes\hello\core\member\MemoryMemberRepository.class]]
+     * with
+     * [Root bean: class [null]; scope=; abstract=false; lazyInit=null; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=autoAppConfig; factoryMethodName=memberRepository; initMethodName=null; destroyMethodName=(inferred); defined in hello.core.AutoAppConfig]
+     *
+     * 물론 개발자가 의도적으로 이런 결과를 기대했다면, 자동 보다는 수동이 우선권을 가지는 것이 좋다. 하지만 현실은 개발자가 의도적으로
+     * 설정해서 이런 결과가 만들어지기 보다는 여러 설정들이 꼬여서 이런 결과가 만들어지는 경우가 대부분이다!
+     * `그러면 정말 잡기 어려운 버그가 만들어진다. 항상 잡기 어려운 버그는 애매한 버그다.`
+     * 그래서 최근 스프링 부트에서는 수동 빈 등록과 자동 빈 등록이 충돌나면 오류가 발생하도록 기본 값을 바꾸었다.
+     * 스프링 부트인 `CoreApplication`을 실행해보면 오류를 볼 수 있다.
+     */
 }
 
 

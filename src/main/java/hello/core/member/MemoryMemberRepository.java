@@ -11,7 +11,7 @@ import java.util.Map;
  * Github : http://github.com/frenchLineCigar
  */
 
-@Component
+@Component //bean name: memoryMemberRepository
 public class MemoryMemberRepository implements MemberRepository {
 
     private static Map<Long, Member> store = new HashMap<>();

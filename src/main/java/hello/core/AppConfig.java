@@ -8,6 +8,7 @@ import hello.core.member.MemberServiceImpl;
 import hello.core.member.MemoryMemberRepository;
 import hello.core.order.OrderService;
 import hello.core.order.OrderServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 
 /**
@@ -30,11 +31,13 @@ public class AppConfig {
     //@Bean memberService -> new MemoryMemberRepository()
     //@Bean orderService -> new MemoryMemberRepository()
 
+    @Autowired MemberRepository memberRepository; //스프링 자동 의존관계 주입
+
     @Bean
     public MemberService memberService() { //bean name (default) -> method name 로 등록됨
         //1번
         System.out.println("call AppConfig.memberService");
-        return new MemberServiceImpl(memberRepository());
+        return new MemberServiceImpl(memberRepository);
     }
 
     @Bean
@@ -48,7 +51,7 @@ public class AppConfig {
     public OrderService orderService() {
         //1번
         System.out.println("call AppConfig.orderService");
-        return new OrderServiceImpl(memberRepository(), discountPolicy());
+        return new OrderServiceImpl(memberRepository, discountPolicy());
     }
 
     @Bean

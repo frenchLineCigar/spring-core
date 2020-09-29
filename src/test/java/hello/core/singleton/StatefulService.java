@@ -7,19 +7,21 @@ package hello.core.singleton;
  */
 
 /**
- * 상태를 유지할 경우 발생하는 문제점 예시
+ * 상태를 유지할 경우 발생하는 문제점 해결
+ * : 무상태(stateless)로 설계 -> 필드 대신에 자바에서 공유되지 않는, 지역변수, 파라미터, ThreadLocal 등을 사용
  */
 public class StatefulService {
 
-    private int price; //상태를 유지하는 필드 10000 -> 20000
+//    private int price; //상태를 유지하는 필드 10000 -> 20000
 
-    public void order(String name, int price) {
+    public int order(String name, int price) {
         System.out.println("name = " + name + " price = " + price);
-        this.price = price; //여기가 문제!
-    }
-
-    public int getPrice() {
+//        this.price = price; //여기가 문제!
         return price;
     }
+
+//    public int getPrice() {
+//        return price;
+//    }
 
 }

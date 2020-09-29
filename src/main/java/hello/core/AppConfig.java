@@ -8,8 +8,8 @@ import hello.core.member.MemberServiceImpl;
 import hello.core.member.MemoryMemberRepository;
 import hello.core.order.OrderService;
 import hello.core.order.OrderServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * Created by frenchline707@gmail.com on 2020-09-28
@@ -17,27 +17,29 @@ import org.springframework.context.annotation.Bean;
  * Github : http://github.com/frenchLineCigar
  */
 
-
-/**
- * `@Configuration`을 적용하지 않고, `@Bean`만 적용하면 어떻게 될까?
- *
- * `@Configuration`을 붙이면 바이트코드를 조작하는 CGLIB 기술을 사용해서 Singleton을 보장하지만,
- * 만약 `@Bean`만 적용하면 어떻게 될까?
- */
-
-//@Configuration 삭제
+@Configuration
 public class AppConfig {
 
     //@Bean memberService -> new MemoryMemberRepository()
     //@Bean orderService -> new MemoryMemberRepository()
 
-    @Autowired MemberRepository memberRepository; //스프링 자동 의존관계 주입
+    //call AppConfig.memberService
+    //call AppConfig.memberRepository
+    //call AppConfig.memberRepository
+    //call AppConfig.orderService
+    //call AppConfig.memberRepository
+    //예상: 메서드 호출 순서는 보장될 순 없으나, 결과적으로 memberRepository가 3번 호출되어야 한다?
+
+    //실제: memberRepository가 1번 호출된다 (스프링이 싱글톤을 보장해주는 것을 로그로 확인)
+    //call AppConfig.memberService
+    //call AppConfig.memberRepository
+    //call AppConfig.orderService
 
     @Bean
     public MemberService memberService() { //bean name (default) -> method name 로 등록됨
         //1번
         System.out.println("call AppConfig.memberService");
-        return new MemberServiceImpl(memberRepository);
+        return new MemberServiceImpl(memberRepository());
     }
 
     @Bean
@@ -51,7 +53,7 @@ public class AppConfig {
     public OrderService orderService() {
         //1번
         System.out.println("call AppConfig.orderService");
-        return new OrderServiceImpl(memberRepository, discountPolicy());
+        return new OrderServiceImpl(memberRepository(), discountPolicy());
     }
 
     @Bean

@@ -9,7 +9,6 @@ import hello.core.member.MemoryMemberRepository;
 import hello.core.order.OrderService;
 import hello.core.order.OrderServiceImpl;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * Created by frenchline707@gmail.com on 2020-09-28
@@ -17,23 +16,19 @@ import org.springframework.context.annotation.Configuration;
  * Github : http://github.com/frenchLineCigar
  */
 
-@Configuration
+
+/**
+ * `@Configuration`을 적용하지 않고, `@Bean`만 적용하면 어떻게 될까?
+ *
+ * `@Configuration`을 붙이면 바이트코드를 조작하는 CGLIB 기술을 사용해서 Singleton을 보장하지만,
+ * 만약 `@Bean`만 적용하면 어떻게 될까?
+ */
+
+//@Configuration 삭제
 public class AppConfig {
 
     //@Bean memberService -> new MemoryMemberRepository()
     //@Bean orderService -> new MemoryMemberRepository()
-
-    //call AppConfig.memberService
-    //call AppConfig.memberRepository
-    //call AppConfig.memberRepository
-    //call AppConfig.orderService
-    //call AppConfig.memberRepository
-    //예상: 메서드 호출 순서는 보장될 순 없으나, 결과적으로 memberRepository가 3번 호출되어야 한다?
-
-    //실제: memberRepository가 1번 호출된다 (스프링이 어떠한 방법을 써서라도 싱글톤을 보장해주는 걸 로그를 통해 확인)
-    //call AppConfig.memberService
-    //call AppConfig.memberRepository
-    //call AppConfig.orderService
 
     @Bean
     public MemberService memberService() { //bean name (default) -> method name 로 등록됨

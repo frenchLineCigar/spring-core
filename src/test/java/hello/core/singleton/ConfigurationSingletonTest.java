@@ -51,27 +51,32 @@ public class ConfigurationSingletonTest {
         AppConfig bean = ac.getBean(AppConfig.class);
 
         System.out.println("bean = " + bean.getClass()); //클래스 타입 보기
-        //출력: bean = class hello.core.AppConfig$$EnhancerBySpringCGLIB$$6cb67377
 
         /**
-         * `AnnotationConfigApplicationContext`에 파라미터로 넘긴 값은 스프링 빈으로 등록된다. 그래서 `AppConfig`도 스프링 빈이 된다
-         * `AppConfig` 스프링 빈을 조회해서 클래스 정보를 출력해보자
-         * `class hello.core.AppConfig$$EnhancerBySpringCGLIB$$6cb67377`
+         * AppConfig에 `@Configuration`을 적용하지 않고, `@Bean`만 적용하면 어떻게 될까?
          *
-         * 순수한 클래스라면 다음과 같이 출력되어야 한다.
-         * `class hello.core.AppConfig`
+         * 출력 : bean = class hello.core.AppConfig
+         * 이 출력 결과를 통해서 AppConfig가 CGLIB 기술 없이 순수한 자바 코드 AppConfig로 스프링 빈에 등록된 것을 알 수 있다.
          *
-         * 그런데 예상과는 다르게 클래스 명에 xxxCGLIB가 붙으면서 상당히 복잡해진 것을 볼 수 있다. 이것은 내가 만든 클래스가 아니라
-         * 스프링이 CGLIB라는 바이트코드 조작 라이브러리를 사용해서 AppConfig클래스를 상속받은 임의의 다른 클래스를 만들고,
-         * 그 다른 클래스를 스프링 빈으로 등록한 것이다!
+         * 출력:
+         * call AppConfig.memberService
+         * call AppConfig.memberRepository
+         * call AppConfig.memberRepository
+         * call AppConfig.orderService
+         * call AppConfig.memberRepository
+         * 이 출력 결과를 통해서 memberRepository가 총 3번 호출된 것을 알 수 있다. 1번은 @Bean에 의해 스프링 컨테이너에 등록하기 위해서이고,
+         * 2번은 각각 `memberRepository()`를 호출하면서(이 경우 직접 new MemoryMemberRepository()로 만든 거랑 다를 게 없으므로 스프링 컨테이너가 관리 X)
+         * 발생한 코드다
+         * ( @Configuration없이 @Bean만 사용해도 스프링 빈으로 등록되지만, 싱글톤을 보장하지 않는다 )
          *
-         * 그 임의의 다른 클래스가 바로 싱글톤이 보장되도록 해준다 (스프링 자체적으로 CGLIB의 내부 기술을 사용)
-         * `@Bean`이 붙은 메서드마다 이미 스프링 빈이 존재하면 존재하는 빈을 반환하고, 스프링 빈이 없으면 생성해서 스프링 빈으로 등록하고
-         * 반환하는 코드가 동적으로 만들어진다
-         * 덕분에 싱글톤이 보장되는 것이다
          *
-         * 참고: AppConfig@CGLIB는 AppConfig의 자식 타입이므로, AppConfig 타입으로 빈을 조회할 수 있다
-         * (부모 타입으로 빈을 조회하면, 자식 타입은 모두 다 끌려나온다)
+         * 인스턴스가 같은지 테스트 ->  configurationTest() 메서드 실행
+         * 출력:
+         * memberService -> memberRepository = hello.core.member.MemoryMemberRepository@60129b9a
+         * orderService -> memberRepository = hello.core.member.MemoryMemberRepository@78d6692f
+         * memberRepository = hello.core.member.MemoryMemberRepository@7a55af6b
+         * ( 각각 다 다른 MemoryMemberRepository 인스턴스를 가지고 있다 )
+         *
          */
     }
 

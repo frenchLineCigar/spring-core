@@ -7,6 +7,7 @@ import hello.core.member.MemberService;
 import hello.core.member.MemberServiceImpl;
 import hello.core.member.MemoryMemberRepository;
 import hello.core.order.OrderService;
+import hello.core.order.OrderServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,24 +22,20 @@ public class AppConfig {
 
     @Bean
     public MemberService memberService() { //bean name (default) -> method name 로 등록됨
-        //1번
         System.out.println("call AppConfig.memberService");
         return new MemberServiceImpl(memberRepository());
     }
 
     @Bean
     public MemberRepository memberRepository() {
-        //1번
         System.out.println("call AppConfig.memberRepository");
         return new MemoryMemberRepository(); //db가 바뀌어도 이 코드부분만 변경하면 됨
     }
 
     @Bean
     public OrderService orderService() {
-        //1번
         System.out.println("call AppConfig.orderService");
-//        return new OrderServiceImpl(memberRepository(), discountPolicy());
-        return null;
+        return new OrderServiceImpl(memberRepository(), discountPolicy());
     }
 
     @Bean

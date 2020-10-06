@@ -3,7 +3,6 @@ package hello.core.order;
 import hello.core.discount.DiscountPolicy;
 import hello.core.member.Member;
 import hello.core.member.MemberRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -26,14 +25,11 @@ import org.springframework.stereotype.Component;
 public class  OrderServiceImpl implements OrderService {
 
     //필드 주입 : 필드에 바로 주입하는 방법
-    @Autowired private MemberRepository memberRepository; //Field injection is not recommended -> 외부 변경이 불가능해서 순수한 자바로 단위 테스트 작성이 까다롭게 된다 -> 안티 패턴
-    @Autowired private DiscountPolicy discountPolicy;
+    private final MemberRepository memberRepository; //Field injection is not recommended -> 외부 변경이 불가능해서 순수한 자바로 단위 테스트 작성이 까다롭게 된다 -> 안티 패턴
+    private final DiscountPolicy discountPolicy;
 
-    //테스트가 힘들어져 setter를 따로 만들어야 되는 번거로움, 이럴 바엔 setter에 @Autowired를 달아서 수정자 주입으로 사용하는게 더나은 게 되는 아이러니...
-    public void setMemberRepository(MemberRepository memberRepository) {
+    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
         this.memberRepository = memberRepository;
-    }
-    public void setDiscountPolicy(DiscountPolicy discountPolicy) {
         this.discountPolicy = discountPolicy;
     }
 

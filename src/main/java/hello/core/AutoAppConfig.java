@@ -1,7 +1,11 @@
 package hello.core;
 
+import hello.core.discount.DiscountPolicy;
 import hello.core.member.MemberRepository;
 import hello.core.member.MemoryMemberRepository;
+import hello.core.order.OrderService;
+import hello.core.order.OrderServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +29,26 @@ import static org.springframework.context.annotation.ComponentScan.Filter;
         excludeFilters = @Filter(type = FilterType.ANNOTATION, classes = Configuration.class) // @Configuration 붙은 클래스는 제외 -> 기존 설정 코드들과 충돌을 피하기 위해
 )
 public class AutoAppConfig {
+
+    /**
+     * 필드 주입을 활용할 수 있는 경우
+     * 2. 스프링 설정을 목적으로 하는 @Configuration 같은 곳에서만 특별한 용도로 사용 (ex. 아래와 같이 수동 빈 등록 시 의존관계 넣어줄 때)
+     */
+    @Autowired
+    MemberRepository memberRepository;
+    @Autowired
+    DiscountPolicy discountPolicy;
+
+    @Bean
+    OrderService orderService() {
+        return new OrderServiceImpl(memberRepository, discountPolicy);
+    }
+//    위 코드는 아래와 같이 써도 됨
+//    @Bean
+//    OrderService orderService(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
+//        return new OrderServiceImpl(memberRepository, discountPolicy);
+//    }
+
 
     // 수동 빈 등록 vs 자동 빈 등록 : 수동 빈 등록이 자동 빈 등록보다 우선권을 가진다 (수동 빈이 자동 빈을 오버라이딩 해버린다)
     @Bean(name = "memoryMemberRepository")

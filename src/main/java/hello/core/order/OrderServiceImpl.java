@@ -3,6 +3,7 @@ package hello.core.order;
 import hello.core.discount.DiscountPolicy;
 import hello.core.member.Member;
 import hello.core.member.MemberRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -25,10 +26,16 @@ import org.springframework.stereotype.Component;
 public class  OrderServiceImpl implements OrderService {
 
     //필드 주입 : 필드에 바로 주입하는 방법
-    private final MemberRepository memberRepository; //Field injection is not recommended -> 외부 변경이 불가능해서 순수한 자바로 단위 테스트 작성이 까다롭게 된다 -> 안티 패턴
-    private final DiscountPolicy discountPolicy;
+    private MemberRepository memberRepository; //Field injection is not recommended -> 외부 변경이 불가능해서 순수한 자바로 단위 테스트 작성이 까다롭게 된다 -> 안티 패턴
+    private DiscountPolicy discountPolicy;
 
     public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
+        this.memberRepository = memberRepository;
+        this.discountPolicy = discountPolicy;
+    }
+
+    @Autowired
+    public void init(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
         this.memberRepository = memberRepository;
         this.discountPolicy = discountPolicy;
     }

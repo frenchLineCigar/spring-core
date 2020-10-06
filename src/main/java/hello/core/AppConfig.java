@@ -33,7 +33,7 @@ public class AppConfig {
         return new MemoryMemberRepository(); //db가 바뀌어도 이 코드부분만 변경하면 됨
     }
 
-//    @Bean
+    @Bean
     public OrderService orderService() {
         //1번
         System.out.println("call AppConfig.orderService");

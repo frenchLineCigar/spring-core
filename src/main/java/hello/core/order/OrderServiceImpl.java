@@ -23,32 +23,19 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-public class OrderServiceImpl implements OrderService {
+public class  OrderServiceImpl implements OrderService {
 
-    //DIP 만족 : OrderServiceImpl이 인터페이스(추상화)에만 의존하도록 코드 변경, 구현체가 누가 들어올지 전혀 모름
-    private MemberRepository memberRepository;
-    private DiscountPolicy discountPolicy;
+    //필드 주입 : 필드에 바로 주입하는 방법
+    @Autowired private MemberRepository memberRepository; //Field injection is not recommended -> 외부 변경이 불가능해서 순수한 자바로 단위 테스트 작성이 까다롭게 된다 -> 안티 패턴
+    @Autowired private DiscountPolicy discountPolicy;
 
-    @Autowired
-    public void setMemberRepository(MemberRepository memberRepository) { //수정자 주입(setter 주입)
-        System.out.println("memberRepository : via setter = " + memberRepository);
+    //테스트가 힘들어져 setter를 따로 만들어야 되는 번거로움, 이럴 바엔 setter에 @Autowired를 달아서 수정자 주입으로 사용하는게 더나은 게 되는 아이러니...
+    public void setMemberRepository(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
-
-    @Autowired
-    public void setDiscountPolicy(DiscountPolicy discountPolicy) { //수정자 주입
-        System.out.println("discountPolicy : via setter = " + discountPolicy);
+    public void setDiscountPolicy(DiscountPolicy discountPolicy) {
         this.discountPolicy = discountPolicy;
     }
-
-//    @Autowired
-//    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) { //생성자 주입 : 생성자를 통해 의존 관계 주입
-//        System.out.println("1. OrderServiceImpl.OrderServiceImpl");
-//        System.out.println("memberRepository : via constructor = " + memberRepository);
-//        System.out.println("discountPolicy : via constructor = " + discountPolicy);
-//        this.memberRepository = memberRepository;
-//        this.discountPolicy = discountPolicy;
-//    }
 
     /**
      * 주문 생성
@@ -65,5 +52,7 @@ public class OrderServiceImpl implements OrderService {
     public MemberRepository getMemberRepository() {
         return memberRepository;
     }
-
+    public DiscountPolicy getDiscountPolicy() {
+        return discountPolicy;
+    }
 }

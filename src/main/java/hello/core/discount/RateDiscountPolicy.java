@@ -1,8 +1,8 @@
 package hello.core.discount;
 
+import hello.core.annotation.MainDiscountPolicy;
 import hello.core.member.Grade;
 import hello.core.member.Member;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  * 할인 정책 : 정률 할인
  */
 @Component
-@Primary //의존관계 우선순위 최상위로
+@MainDiscountPolicy // -> @Qualifier("mainDiscountPolicy") 처럼 동작 + `컴파일 시점에 오류를 확인`
 public class RateDiscountPolicy implements DiscountPolicy {
 
     private int discountPercent = 10;

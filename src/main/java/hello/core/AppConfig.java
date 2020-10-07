@@ -8,6 +8,7 @@ import hello.core.member.MemberServiceImpl;
 import hello.core.member.MemoryMemberRepository;
 import hello.core.order.OrderService;
 import hello.core.order.OrderServiceImpl;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -40,6 +41,7 @@ public class AppConfig {
     }
 
     @Bean
+    @Qualifier("mainDiscountPolicy") //직접 빈 등록시에도 @Qualifier를 동일하게 사용할 수 있다
     public DiscountPolicy discountPolicy() { // OCP 만족 :확장에는 열려있고, 변경에는 닫혀있다
 //        return new FixDiscountPolicy();
         return new RateDiscountPolicy();

@@ -4,6 +4,7 @@ import hello.core.discount.DiscountPolicy;
 import hello.core.member.Member;
 import hello.core.member.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,16 +29,14 @@ public class  OrderServiceImpl implements OrderService {
     private final MemberRepository memberRepository;
     private final DiscountPolicy discountPolicy;
 
-    /**
-     * `@Autowired`는 먼저 타입 매칭을 시도하고, 이때 여러 빈이 있으면 필드 이름, 파라미터 이름으로 빈 이름을 추가 매칭한다
-     */
 //    @Autowired
-//    private DiscountPolicy rateDiscountPolicy; // 필드 주입 시 : 필드 명을 빈 이름으로 변경
-
+//    @Qualifier("mainDiscountPolicy")
+//    private DiscountPolicy discountPolicy; //필드 주입 @Qualifier 사용 예시
+    
     @Autowired
-    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy rateDiscountPolicy) { //생성자 주입 시 : 파라미터 명을 빈 이름으로 변경
+    public OrderServiceImpl(MemberRepository memberRepository, @Qualifier("mainDiscountPolicy") DiscountPolicy discountPolicy) { //생성자 주입 예시
         this.memberRepository = memberRepository;
-        this.discountPolicy = rateDiscountPolicy;
+        this.discountPolicy = discountPolicy;
     }
 
     /**

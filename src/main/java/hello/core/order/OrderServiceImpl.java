@@ -4,7 +4,6 @@ import hello.core.discount.DiscountPolicy;
 import hello.core.member.Member;
 import hello.core.member.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
@@ -29,12 +28,8 @@ public class  OrderServiceImpl implements OrderService {
     private final MemberRepository memberRepository;
     private final DiscountPolicy discountPolicy;
 
-//    @Autowired
-//    @Qualifier("mainDiscountPolicy")
-//    private DiscountPolicy discountPolicy; //필드 주입 @Qualifier 사용 예시
-    
     @Autowired
-    public OrderServiceImpl(MemberRepository memberRepository, @Qualifier("mainDiscountPolicy") DiscountPolicy discountPolicy) { //생성자 주입 예시
+    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) { //생성자 주입 예시
         this.memberRepository = memberRepository;
         this.discountPolicy = discountPolicy;
     }

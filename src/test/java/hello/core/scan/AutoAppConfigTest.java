@@ -2,6 +2,7 @@ package hello.core.scan;
 
 import hello.core.AutoAppConfig;
 import hello.core.discount.DiscountPolicy;
+import hello.core.discount.DiscountPolicyConfig;
 import hello.core.member.MemberRepository;
 import hello.core.member.MemberService;
 import hello.core.order.OrderServiceImpl;
@@ -21,7 +22,7 @@ public class AutoAppConfigTest {
 
     @Test
     void basicScan() {
-        ApplicationContext ac = new AnnotationConfigApplicationContext(AutoAppConfig.class);
+        ApplicationContext ac = new AnnotationConfigApplicationContext(AutoAppConfig.class, DiscountPolicyConfig.class);
 
         MemberService memberService = ac.getBean(MemberService.class);
         //System.out.println(Arrays.toString(ac.getBeanNamesForAnnotation(Component.class))); //[autoAppConfig, rateDiscountPolicy, memberServiceImpl, memoryMemberRepository, orderServiceImpl]

@@ -2,6 +2,7 @@ package hello.core.autowired;
 
 import hello.core.AutoAppConfig;
 import hello.core.discount.DiscountPolicy;
+import hello.core.discount.DiscountPolicyConfig;
 import hello.core.member.Grade;
 import hello.core.member.Member;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ public class AllBeanTest {
 
     @Test
     void findAllBean() {
-        ApplicationContext ac = new AnnotationConfigApplicationContext(AutoAppConfig.class, DiscountService.class); //스프링 빈 등록
+        ApplicationContext ac = new AnnotationConfigApplicationContext(AutoAppConfig.class, DiscountService.class, DiscountPolicyConfig.class); //스프링 빈 등록
 
         DiscountService discountService = ac.getBean(DiscountService.class);
         Member member = new Member(1L, "userA", Grade.VIP); //VIP

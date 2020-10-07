@@ -3,6 +3,7 @@ package hello.core.order;
 import hello.core.discount.DiscountPolicy;
 import hello.core.member.Member;
 import hello.core.member.MemberRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
@@ -22,15 +23,11 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
+@RequiredArgsConstructor //(필수 값인) final 필드를 파라미터로 받는 생성자를 만들어준다(Ctrl + F12로 확인)
 public class  OrderServiceImpl implements OrderService {
 
-    private final MemberRepository memberRepository; //생성자 주입을 사용하면 final 키워드를 활용할 수 있음(생성자에서 발생하는 코드 누락을 컴파일 시점에 알 수 있음)
+    private final MemberRepository memberRepository;
     private final DiscountPolicy discountPolicy;
-
-    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
-        this.memberRepository = memberRepository;
-        this.discountPolicy = discountPolicy;
-    }
 
     /**
      * 주문 생성

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
  * 할인 정책 : 고정 할인 정책
  */
 
-//@Component("fix")
 @Component
 public class FixDiscountPolicy implements DiscountPolicy {
 

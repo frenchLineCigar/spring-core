@@ -30,12 +30,13 @@ public class AllBeanTest {
         Member member = new Member(1L, "userA", Grade.VIP); //VIP
         assertThat(discountService).isInstanceOf(DiscountService.class);
 
-        int fixDiscountPrice = discountService.discount(member, 20000, "fixDiscountPolicy");
+        int fixDiscountPrice = discountService.discount(member, 20000, "fix");
+//        int fixDiscountPrice = discountService.discount(member, 20000, "fixDiscountPolicy");
         assertThat(fixDiscountPrice).isEqualTo(1000); //고정 할인 정책에서는 VIP의 경우 1000원이 할인돼야 함
 
-        int rateDiscountPrice = discountService.discount(member, 50000, "rateDiscountPolicy");
+        int rateDiscountPrice = discountService.discount(member, 50000, "rate");
+//        int rateDiscountPrice = discountService.discount(member, 50000, "rateDiscountPolicy");
         assertThat(rateDiscountPrice).isEqualTo(5000); //정률 할인 정책에서는 VIP의 경우 판매금액의 10%가 할인돼야 함
-
 
     }
 
@@ -57,4 +58,5 @@ public class AllBeanTest {
         }
 
     }
+
 }

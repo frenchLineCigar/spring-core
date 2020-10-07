@@ -28,10 +28,16 @@ public class  OrderServiceImpl implements OrderService {
     private final MemberRepository memberRepository;
     private final DiscountPolicy discountPolicy;
 
+    /**
+     * `@Autowired`는 먼저 타입 매칭을 시도하고, 이때 여러 빈이 있으면 필드 이름, 파라미터 이름으로 빈 이름을 추가 매칭한다
+     */
+//    @Autowired
+//    private DiscountPolicy rateDiscountPolicy; // 필드 주입 시 : 필드 명을 빈 이름으로 변경
+
     @Autowired
-    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
+    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy rateDiscountPolicy) { //생성자 주입 시 : 파라미터 명을 빈 이름으로 변경
         this.memberRepository = memberRepository;
-        this.discountPolicy = discountPolicy;
+        this.discountPolicy = rateDiscountPolicy;
     }
 
     /**

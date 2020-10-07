@@ -27,17 +27,7 @@ public class  OrderServiceImpl implements OrderService {
     private final MemberRepository memberRepository; //생성자 주입을 사용하면 final 키워드를 활용할 수 있음(생성자에서 발생하는 코드 누락을 컴파일 시점에 알 수 있음)
     private final DiscountPolicy discountPolicy;
 
-//    @Autowired
-//    public void setMemberRepository(MemberRepository memberRepository) {
-//        this.memberRepository = memberRepository;
-//    }
-//
-//    @Autowired
-//    public void setDiscountPolicy(DiscountPolicy discountPolicy) {
-//        this.discountPolicy = discountPolicy;
-//    }
-
-        public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
+    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
         this.memberRepository = memberRepository;
         this.discountPolicy = discountPolicy;
     }

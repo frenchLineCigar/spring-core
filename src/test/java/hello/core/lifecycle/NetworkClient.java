@@ -1,9 +1,5 @@
 package hello.core.lifecycle;
 
-import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 /**
@@ -16,8 +12,6 @@ import javax.annotation.PreDestroy;
  * Github : http://github.com/frenchLineCigar
  */
 
-@Component
-@Getter
 public class NetworkClient {
 
     private String url; //접속 서버 url
@@ -26,7 +20,6 @@ public class NetworkClient {
         System.out.println("생성자 호출, url = " + url);
     }
 
-    @Autowired
     public void setUrl(String url) { //url은 외부에서 setter로 넣을 수 있도록
         System.out.println("NetworkClient.setUrl, url = " + url);
         this.url = url;

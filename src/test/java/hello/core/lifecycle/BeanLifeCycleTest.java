@@ -18,13 +18,13 @@ public class BeanLifeCycleTest {
     public void lifeCycleTest() {
         ConfigurableApplicationContext ac = new AnnotationConfigApplicationContext(LifeCycleConfig.class);
         NetworkClient client = ac.getBean(NetworkClient.class);
-        ac.close(); //ApplicationContext를 닫음, 스프링 컨테이너 종료 호출
+        ac.close(); //ApplicationContext를 닫음, 스프링 컨테 이너 종료 호출
     }
 
     @Configuration
     static class LifeCycleConfig {
 
-        @Bean
+        @Bean(initMethod = "init", destroyMethod = "close")
         public NetworkClient networkClient() {
             NetworkClient networkClient = new NetworkClient();
             networkClient.setUrl("http://hello-spring.dev"); //외부에서 값 셋팅하는 의미로

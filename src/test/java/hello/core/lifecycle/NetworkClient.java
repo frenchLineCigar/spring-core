@@ -1,5 +1,11 @@
 package hello.core.lifecycle;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+/**
+ *  -> javax로 시작하는 패키지 : 자바 진영에서 공식적으로 지원. 꼭 스프링이 아닌 다른 컨테이너를 쓴다 하더라도 그대로 적용됨
+ */
+
 /**
  * Created by frenchline707@gmail.com on 2020-10-08
  * Blog : http://frenchline707.tistory.com
@@ -33,12 +39,14 @@ public class NetworkClient {
         System.out.println("close " + url);
     }
 
+    @PostConstruct
     public void init() { //프로퍼티 셋팅이 끝나면 호출 => 의존관계 주입이 끝나면 호출
         System.out.println("NetworkClient.init");
         connect();
         call("초기화 연결 메시지");
     }
 
+    @PreDestroy
     public void close() { //빈이 종료될 때(스프링 컨테이너가 종료될 때) 호출
         System.out.println("NetworkClient.close");
         disconnect();

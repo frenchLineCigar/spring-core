@@ -1,12 +1,14 @@
 package hello.core.scope;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Created by frenchline707@gmail.com on 2020-10-09
@@ -22,16 +24,52 @@ public class SingletonWithPrototypeTest1 {
         //클라이언트 A
         PrototypeBean prototypeBean1 = ac.getBean(PrototypeBean.class);
         prototypeBean1.addCount();
-        Assertions.assertThat(prototypeBean1.getCount()).isEqualTo(1);
+        assertThat(prototypeBean1.getCount()).isEqualTo(1);
 
         //클라이언트 B
         PrototypeBean prototypeBean2 = ac.getBean(PrototypeBean.class);
         prototypeBean2.addCount();
-        Assertions.assertThat(prototypeBean2.getCount()).isEqualTo(1);
+        assertThat(prototypeBean2.getCount()).isEqualTo(1);
 
         ac.close();
     }
 
+    @Test
+    void singletonClientUsePrototype() { //싱글톤 빈과 프로토타입 빈 함께 사용시 문제점
+        AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext(ClientBean.class, PrototypeBean.class);
+        //클라이언트 A
+        ClientBean clientBean1 = ac.getBean(ClientBean.class);
+        int count1 = clientBean1.logic(); //생성시점에 주입된 프로토타입 빈을 계속 사용 -> 프로토타입 빈을 새로 생성하지 않는다
+        assertThat(count1).isEqualTo(1);
+
+        //클라이언트 B
+        ClientBean clientBean2 = ac.getBean(ClientBean.class);
+        int count2 = clientBean2.logic(); //생성시점에 주입된 프로토타입 빈을 계속 사용
+        assertThat(count2).isEqualTo(2);
+
+    }
+
+    /* 싱글톤 빈 */
+    @Scope("singleton") //-> 싱글톤이 default 라서 사실 @Scope 애노테이션 자체를 안적어도 됨
+    //@RequiredArgsConstructor
+    static class ClientBean { //싱글톤 빈이 의존관계 주입을 통해서 프로토타입 빈을 주입받아 사용
+
+        private final PrototypeBean prototypeBean; //생성시점에 주입
+
+        @Autowired
+        public ClientBean(PrototypeBean prototypeBean) { //생성시점에 프로토타입 빈 주입 요청
+            this.prototypeBean = prototypeBean;
+        }
+
+        public int logic() {
+            prototypeBean.addCount();
+            int count = prototypeBean.getCount();
+            return count;
+        }
+
+    }
+
+    /* 프로토타입 빈 */
     @Scope("prototype")
     static class PrototypeBean {
         private int count = 0;
@@ -45,36 +83,15 @@ public class SingletonWithPrototypeTest1 {
         }
 
         @PostConstruct
-        public void init() {
+        public void init() { //프로토타입 빈도 초기화 메서드는 호출 O
             System.out.println("PrototypeBean.init " + this); //this -> 현재 나를 찍어줌, 나의 참조값 확인
         }
 
         @PreDestroy
-        public void destroy() {
+        public void destroy() { //프로토타입 빈이므로 스프링 컨테이너 종료 시점에 이 소멸 메서드는 호출 X
             System.out.println("PrototypeBean.destroy");
         }
     }
 
-    /**
-     * 프로토타입 스코프 - 싱글톤 빈과 함께 사용시 문제점
-     *
-     * 스프링 컨테이너에 프로토타입 스코프의 빈을 요청하면 항상 새로운 객체 인스턴스를 생성해서 반환한다.
-     * 하지만 (그러지 않을 때가 있다!!) 싱글톤 빈과 함께 사용할 때는 의도한 대로 잘 동작하지 않으므로 주의해야 한다.
-     *
-     * 코드는 스프링 컨테이너에 `프로토타입 빈을 직접 요청`하는 예제이다
-     *
-     * *스프링 컨테이너에 프로토타입 빈 직접 요청 1*
-     *
-     * 1. 클라이언트A는 스프링 컨테이너에 프로토타입 빈을 요청한다.
-     * 2. 스프링 컨테이너는 프로토타입 빈을 새로 생성해서 반환(PrototypeBean@x01)한다. 해당 빈의 count 필드 값은 0이다.
-     * 3. 클라이언트는 조회한 프로토타입 빈에 `addCount()`를 호출하면서 count 필드를 +1 한다.
-     * 4. 결과적으로 프로토타입 빈(PrototypeBean@x01)의 count는 1이 된다.
-     *
-     * *스프링 컨테이너에 프로토타입 빈 직접 요청 2*
-     *
-     * 1. 클라이언트B는 스프링 컨테이너에 프로토타입 빈을 요청한다.
-     * 2. 스프링 컨테이너는 프로토타입 빈을 새로 생성해서 반환(PrototypeBean@x01)한다. 해당 빈의 count 필드 값은 0이다.
-     * 3. 클라이언트는 조회한 프로토타입 빈에 `addCount()`를 호출하면서 count 필드를 +1 한다.
-     * 4. 결과적으로 프로토타입 빈(PrototypeBean@x02)의 count는 1이 된다.
-     */
+
 }

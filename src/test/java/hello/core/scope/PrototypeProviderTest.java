@@ -2,8 +2,8 @@ package hello.core.scope;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Scope;
 
@@ -36,17 +36,19 @@ public class PrototypeProviderTest {
     }
 
     /**
-     * 방법 1. 스프링 컨테이너에 요청
-     * : 가장 간단한 방법은 싱글톤 빈이 프로토타입을 사용할 때 마다 스프링 컨테이너에 새로 요청하는 것이다.
+     * 방법 2. ObjectFactory, ObjectProvider
+     * : 지정한 빈을 컨테이너에서 대신 찾아주는 DL (Dependency Lookup) 서비스를 제공하는 것이 바로 `ObjectProvider`이다.
+     * ( 참고로 과거에는 `ObjectFactory`가 있었는데, 여기에 편의 기능을 추가해서 `ObjectProvider`가 만들어졌다. )
      */
+    @Scope("singleton") //<- 생략 가능, default가 @Scope("singleton")
     static class ClientBean {
 
         @Autowired
-        private ApplicationContext ac;
+        private ObjectProvider<PrototypeBean> prototypeBeanProvider; //테스트니까 편하게 필드 주입함
 
         public int logic() {
-            //logic() 호출 시 마다 스프링 컨테이너에 새로 요청해서 프로토타입 빈을 새롭게 생성 받아서 쓴다
-            PrototypeBean prototypeBean = ac.getBean(PrototypeBean.class);
+            // ObjectProvider 사용해서 DL 받기
+            PrototypeBean prototypeBean = prototypeBeanProvider.getObject(); //프로바이더가 제네릭에 지정한 타입의 빈을 대신 찾아주는 DL 기능만 제공
             prototypeBean.addCount();
             int count = prototypeBean.getCount();
             return count;

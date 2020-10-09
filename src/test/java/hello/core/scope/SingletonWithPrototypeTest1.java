@@ -1,6 +1,5 @@
 package hello.core.scope;
 
-import lombok.Getter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -47,64 +46,18 @@ public class SingletonWithPrototypeTest1 {
         ClientBean clientBean2 = ac.getBean(ClientBean.class);
         int count2 = clientBean2.logic(); //생성시점에 주입된 프로토타입 빈을 계속 사용
         assertThat(count2).isEqualTo(2);
-    }
 
-    @Test
-    void otherSingletonClientsUsePrototype() { //여러 빈에서 같은 프로토타입 빈을 주입 받으면, 주입 받는 시점에 각각 새로운 프로토타입 빈이 생성
-        AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext(ClientBean.class, ClientBean2.class, PrototypeBean.class);
-        //clientA
-        ClientBean clientA = ac.getBean(ClientBean.class);
-        clientA.logic();
-        //clientB
-        ClientBean2 clientB = ac.getBean(ClientBean2.class);
-        clientB.logic();
-
-//        int countA = clientA.getPrototypeBean().getCount();
-//        int countB = clientB.getPrototypeBean().getCount();
-//        System.out.println("countA = " + countA);
-//        System.out.println("countB = " + countB);
-
-//        PrototypeBean prototypeBeanA = clientA.getPrototypeBean();
-//        System.out.println("prototypeBeanA = " + prototypeBeanA);
-//        PrototypeBean prototypeBeanB = clientB.getPrototypeBean();
-//        System.out.println("prototypeBeanB = " + prototypeBeanB);
     }
 
     /* 싱글톤 빈 */
-    @Getter
     @Scope("singleton") //-> 싱글톤이 default 라서 사실 @Scope 애노테이션 자체를 안적어도 됨
+    //@RequiredArgsConstructor
     static class ClientBean { //싱글톤 빈이 의존관계 주입을 통해서 프로토타입 빈을 주입받아 사용
 
-        private final PrototypeBean prototypeBean; //생성시점에 주입 x01
+        private final PrototypeBean prototypeBean; //생성시점에 주입
 
         @Autowired
         public ClientBean(PrototypeBean prototypeBean) { //생성시점에 프로토타입 빈 주입 요청
-//            System.out.println("[call] ClientBean.ClientBean");
-//            System.out.println("prototypeBean = " + prototypeBean);
-//            System.out.println("prototypeBean.getCount() = " + prototypeBean.getCount());
-            this.prototypeBean = prototypeBean;
-        }
-
-        public int logic() {
-            prototypeBean.addCount();
-            int count = prototypeBean.getCount();
-            return count;
-        }
-
-    }
-
-    /* 싱글톤 빈 */
-    @Getter
-    @Scope("singleton")
-    static class ClientBean2 { //싱글톤 빈이 의존관계 주입을 통해서 프로토타입 빈을 주입받아 사용
-
-        private final PrototypeBean prototypeBean; //생성시점에 주입 x02
-
-        @Autowired
-        public ClientBean2(PrototypeBean prototypeBean) { //생성시점에 프로토타입 빈 주입 요청
-//            System.out.println("[call] ClientBean2.ClientBean2");
-//            System.out.println("prototypeBean = " + prototypeBean);
-//            System.out.println("prototypeBean.getCount() = " + prototypeBean.getCount());
             this.prototypeBean = prototypeBean;
         }
 

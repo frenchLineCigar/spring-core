@@ -2,6 +2,7 @@ package hello.core.scope;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Scope;
 
@@ -45,23 +46,26 @@ public class SingletonWithPrototypeTest1 {
         //클라이언트 B
         ClientBean clientBean2 = ac.getBean(ClientBean.class);
         int count2 = clientBean2.logic(); //생성시점에 주입된 프로토타입 빈을 계속 사용
-        assertThat(count2).isEqualTo(2);
+        assertThat(count2).isEqualTo(1);
 
     }
 
     /* 싱글톤 빈 */
     @Scope("singleton") //-> 싱글톤이 default 라서 사실 @Scope 애노테이션 자체를 안적어도 됨
-    //@RequiredArgsConstructor
     static class ClientBean { //싱글톤 빈이 의존관계 주입을 통해서 프로토타입 빈을 주입받아 사용
 
-        private final PrototypeBean prototypeBean; //생성시점에 주입
+//        private final PrototypeBean prototypeBean; //생성시점에 주입
 
         @Autowired
-        public ClientBean(PrototypeBean prototypeBean) { //생성시점에 프로토타입 빈 주입 요청
-            this.prototypeBean = prototypeBean;
-        }
+        ApplicationContext applicationContext;
+
+//        @Autowired
+//        public ClientBean(PrototypeBean prototypeBean) { //생성시점에 프로토타입 빈 주입 요청
+//            this.prototypeBean = prototypeBean;
+//        }
 
         public int logic() {
+            PrototypeBean prototypeBean = applicationContext.getBean(PrototypeBean.class); //logic()을 호출할 때 마다 스프링 컨테이너에 프로토타입 빈 요청하고, 스프링 컨테이너는 다시 생성해서 반환
             prototypeBean.addCount();
             int count = prototypeBean.getCount();
             return count;

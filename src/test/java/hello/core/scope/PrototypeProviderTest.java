@@ -2,7 +2,7 @@ package hello.core.scope;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Scope;
@@ -44,11 +44,11 @@ public class PrototypeProviderTest {
     static class ClientBean {
 
         @Autowired
-        private ObjectProvider<PrototypeBean> prototypeBeanProvider; //테스트니까 편하게 필드 주입함
+        private ObjectFactory<PrototypeBean> prototypeBeanProvider; //테스트니까 편하게 필드 주입함
 
         public int logic() {
-            // ObjectProvider 사용해서 DL 받기
-            PrototypeBean prototypeBean = prototypeBeanProvider.getObject(); //프로바이더가 제네릭에 지정한 타입의 빈을 대신 찾아주는 DL 기능만 제공
+            // ObjectFactory 사용해서 DL 받기
+            PrototypeBean prototypeBean = prototypeBeanProvider.getObject(); //제네릭에 지정한 타입의 빈을 대신 찾아주는 DL 기능만 제공
             prototypeBean.addCount();
             int count = prototypeBean.getCount();
             return count;

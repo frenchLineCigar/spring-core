@@ -2,34 +2,27 @@ package hello.core;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 
 @SpringBootApplication
-//@ComponentScan(
-//		excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = AppConfig.class)
-//)
-public class CoreApplication {
+public class CoreApplication { //-> AnnotationConfigServletWebServerApplicationContext 기반 구동 (spring-boot-start-web 추가 시)
 
+	/**
+	 * 스프링 부트에 웹 라이브러리가 추가되면, 웹과 관련된 추가 설정과 환경들이 필요하므로
+	 * `AnnotationConfigServletWebServerApplicationContext` 를 기반으로 애플리케이션 구동
+	 */
 	public static void main(String[] args) {
-		SpringApplication.run(CoreApplication.class, args);
+		System.out.println("==== CoreApplication.main ====");
+		ApplicationContext ac = SpringApplication.run(CoreApplication.class, args);
+		System.out.println("[main] ac = " + ac);
+		System.out.println("[main] ac.getClass() = " + ac.getClass()); //AnnotationConfigServletWebServerApplicationContext
 	}
 
 	/**
-	 * 여러 설정들이 꼬여서 잡기 어려운 애매한 버그가 발생하는 것을 방지하기 위해
-	 * 최근 스프링 부트는 수동 빈 등록과 자동 빈 등록이 충돌나면 오류가 발생하도록 기본 값을 바꾸었다.
-	 *
-	 * [ 수동 빈 등록, 자동 빈 등록 오류 시 스프링 부트 에러 ]
-	 *
-	 * The bean 'memoryMemberRepository', defined in class path resource [hello/core/AutoAppConfig.class], could not be registered.
-	 * A bean with that name has already been defined in file [C:\...\core\out\production\classes\hello\core\member\MemoryMemberRepository.class]
-	 * and overriding is disabled. ( 오버라이딩이 비활성화됨 )
-	 *
-	 * Action:
-	 *
-	 * Consider renaming one of the beans or enabling overriding 
-	 * by setting 
-	 * spring.main.allow-bean-definition-overriding=true
-	 * ( application.properties에 셋팅 값을 위와 같이 추가해주면 오버라이딩 활성화됨 )
-	 *
-	 *
+	 * 1. `spring-boot-starter-web` 라이브러리를 추가하면 스프링 부트는 내장 톰캣 서버(Embedded Tomcat Server)를 활용해서
+	 * 	웹 서버와 스프링을 함께 실행시킨다
+	 * 2. 스프링 부트는 웹 라이브러리가 없으면, 우리가 지금까지 학습한 `AnnotationConfigApplicationContext` 를 기반으로 애플리케이션을 구동한다. 웹 라이브러리가 추가되면, 웹과 관련된 추가 설정과 환경들이 필요하므로
+	 * 	`AnnotationConfigServletWebServerApplicationContext` 를 기반으로 애플리케이션을 구동한다.
+	 * * 참고 : 스프링 부트 테스트( @SpringBootTest )는 `GenericWebApplicationContext` 를 기반으로 구동
 	 */
 }

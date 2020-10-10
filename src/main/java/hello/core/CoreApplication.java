@@ -1,21 +1,32 @@
 package hello.core;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.stereotype.Component;
 
 import static org.springframework.context.annotation.ComponentScan.Filter;
 
-@SpringBootApplication
+@SpringBootApplication //AnnotationConfigServletWebServerApplicationContext 기반 구동 (spring-boot-start-web 추가 시)
 @ComponentScan(
 		excludeFilters = {
 				@Filter(type = FilterType.ANNOTATION, classes = Configuration.class), //충돌 피하려고 다른 설정 제외
 		}
 )
-public class CoreApplication { //-> AnnotationConfigServletWebServerApplicationContext 기반 구동 (spring-boot-start-web 추가 시)
+public class CoreApplication {
+
+	/**
+	 * 주입 받아서 직접 확인
+	 */
+	@Autowired
+	public CoreApplication(ApplicationContext applicationContext) {
+		System.out.println("applicationContext = " + applicationContext);
+		System.out.println("applicationContext.getClass() = " + applicationContext.getClass()); //AnnotationConfigServletWebServerApplicationContext
+	}
 
 	/**
 	 * 스프링 부트에 웹 라이브러리가 추가되면, 웹과 관련된 추가 설정과 환경들이 필요하므로
@@ -35,4 +46,22 @@ public class CoreApplication { //-> AnnotationConfigServletWebServerApplicationC
 	 * 	`AnnotationConfigServletWebServerApplicationContext` 를 기반으로 애플리케이션을 구동한다.
 	 * * 참고 : 스프링 부트 테스트( @SpringBootTest )는 `GenericWebApplicationContext` 를 기반으로 구동
 	 */
+
+	@Component
+	static class AppContextView {
+
+		@Autowired
+		public AppContextView(ApplicationContext ac) {
+			System.out.println("==== AppContextView.AppContextView ====");
+			System.out.println("ac = " + ac + "\n, object = " + ac.getClass()); //AnnotationConfigServletWebServerApplicationContext
+		}
+
+		@Autowired
+		public void showContext(ApplicationContext ac) {
+			System.out.println("==== AppContextView.showContext ====");
+			System.out.println("[showContext] ac = " + ac);
+			System.out.println("[showContext] ac.getClass() = " + ac.getClass()); //AnnotationConfigServletWebServerApplicationContext
+		}
+
+	}
 }

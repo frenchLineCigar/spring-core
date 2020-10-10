@@ -3,8 +3,18 @@ package hello.core;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
+
+import static org.springframework.context.annotation.ComponentScan.Filter;
 
 @SpringBootApplication
+@ComponentScan(
+		excludeFilters = {
+				@Filter(type = FilterType.ANNOTATION, classes = Configuration.class), //충돌 피하려고 다른 설정 제외
+		}
+)
 public class CoreApplication { //-> AnnotationConfigServletWebServerApplicationContext 기반 구동 (spring-boot-start-web 추가 시)
 
 	/**

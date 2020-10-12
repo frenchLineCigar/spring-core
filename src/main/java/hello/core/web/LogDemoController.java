@@ -2,7 +2,6 @@ package hello.core.web;
 
 import hello.core.common.MyLogger;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,15 +19,17 @@ import javax.servlet.http.HttpServletRequest;
 public class LogDemoController { //로거 작동 확인용 테스트 컨트롤러
 
     private final LogDemoService logDemoService;
-    private final ObjectProvider<MyLogger> myLoggerProvider; //MyLogger 를 주입받는 게 아니라, MyLogger 를 찾을 수 있는(DL, Dependency Lookup) 빈이 주입 됨
+    private final MyLogger myLogger; //프록시 객체 덕분에 편리하게 request scope를 사용하고, 진짜 객체 조회를 꼭 필요한 시점까지 지연처리
 
     @RequestMapping(value = "log-demo")
     @ResponseBody
     public String logDemo(HttpServletRequest request) throws InterruptedException {
         String requestURL = request.getRequestURL().toString(); //요청 URL
         String method = request.getMethod(); //요청 메서드
-        MyLogger myLogger = myLoggerProvider.getObject(); //프로바이더에 DL, 이 시점에 request 스코프 빈이 생성된다
-        myLogger.setRequestURL(requestURL);
+
+        System.out.println("myLogger = " + myLogger.getClass());
+
+        myLogger.setRequestURL(requestURL); //기능을 실제 호출하는 시점, 이때 진짜를 찾아서 동작한다.
         myLogger.setMethod(method);
 
         myLogger.log("controller test");
